@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Submit Your Order</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+</head>
+<body>
+<section class="section">
+        <div class="container is-fluid">
+            <h1 class="title">
+                Demo of Paypal Express Checkout and Braintree integration
+            </h1>
+            <div class="notification">
+                This container is <strong>fluid</strong>: it will have a 32px gap on either side, on any
+                viewport size.
+            </div>
+            <div>
+                <form method="post" action="order-create.php">
+
+                    <div class="field">
+                        <label class="label">Amount</label>
+                        <div class="control">
+                            <input name="amount" class="input" type="text" placeholder="Amount in USD">
+                        </div>
+                    </div>
+                    <nav class="panel">
+                        <p class="panel-heading">
+                            Shipping Address
+                        </p>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label">First Name</label>
+                                <div class="control">
+                                    <input name="firstName" type="text" placeholder="First Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label">Last Name</label>
+                                <div class="control">
+                                    <input name="lastName" class="input" type="text" placeholder="Text input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label">Company</label>
+                                <div class="control">
+                                    <input name="company" class="input" type="text" placeholder="Text input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label">Street Address</label>
+                                <div class="control">
+                                    <input name="streetAddress" class="input" type="text" placeholder="Text input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label">Extended Addressame</label>
+                                <div class="control">
+                                    <input name="extendedAddress" class="input" type="text" placeholder="Text input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label">Locality</label>
+                                <div class="control">
+                                    <input name="locality" class="input" type="text" placeholder="Text input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label">Region</label>
+                                <div class="control">
+                                    <input name="region" class="input" type="text" placeholder="Text input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="field">
+                                <label class="label">Postal Code</label>
+                                <div class="control">
+                                    <input name="postalCode" class="input" type="text" placeholder="Text input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block">
+                            <div class="control">
+                                <label class="label">Country</label><span class="select" name="countryCodeAlpha2">
+                                    <select>
+                                        <option value="US">US</option>
+                                        <option value="GB">UK</option>
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                    </nav>
+
+
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <div id="paypal-button"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+</section>
+<script src="https://www.paypalobjects.com/api/checkout.js" data-version-4></script>
+<script src="https://js.braintreegateway.com/web/3.25.0/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.25.0/js/paypal-checkout.min.js"></script>
+<script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script>
+    $.ajax({
+        url: "/require-client-token.php",
+        method: 'GET',
+    }).done(function (data) {
+        paypal.Button.render({
+            braintree: window.braintree,
+            client: {
+                sandbox: data
+            },
+            env: 'sandbox', // Or 'production'
+            commit: true, // This will add the transaction amount to the PayPal button
+
+            payment: function(data, actions) {
+                return actions.braintree.create({
+                    flow: 'checkout', // Required
+                    amount: 10.00, // Required
+                    currency: 'USD', // Required
+                    enableShippingAddress: true,
+                    shippingAddressEditable: false,
+                    shippingAddressOverride: {
+                        firstName: 'Scruff',
+                        lastName: 'McGruff',
+                        company: 'Awesome Company',
+                        streetAddress: '1234 Main St.',
+                        extendedAddress: 'Unit 1',
+                        locality: 'Chicago',
+                        region: 'Illinois',
+                        postalCode: '60652',
+                        countryCodeAlpha2: 'US',
+                    }
+                });
+            },
+
+            onAuthorize: function (data, actions) {
+                // Submit `payload.nonce` to your server.
+                //sent_payment_nonce(payload.nonce);
+                //console.log(payload);
+                return actions.payment.tokenize().then(function(data){
+                  return paypal.request.post('order-create.php', {nonce: data.nonce});
+                });
+                //return actions.payment.execut().then(function(payment){
+                   //console.log("Payment completed:", payment)
+                //});
+            },
+        }, '#paypal-button');
+    });
+
+    function sent_payment_nonce(payload_noce) {
+        console.log("onAuthorized generated");
+    }
+</script>
+</body>
+</html>
