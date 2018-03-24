@@ -22,7 +22,6 @@ if(isset($_POST['hidden-nonce'])){
             'shipping' =>[
                 'firstName'=> $_POST['firstName'],
                 'lastName' => $_POST['lastName'],
-                'company' => $_POST['company'],
                 'streetAddress' => $_POST['streetAddress'],
                 'extendedAddress' => $_POST['extendeAddress'],
                 'locality' => $_POST['city'],
@@ -114,10 +113,10 @@ if(isset($_POST['hidden-nonce'])){
                         </div>
                         <div class="panel-block">
                             <div class="field">
-                                <label class="label">Company</label>
+                                <label class="label">Phone</label>
                                 <div class="control">
-                                    Awesome Company
-                                    <input type="hidden" name="company" id="company" value="Awesome Company">
+                                    123.456.7890
+                                    <input type="hidden" name="phone" id="phone" value="123.456.7890">
                                     <!--<input name="company" id="company" class="input" type="text" placeholder="Company">-->
                                 </div>
                             </div>
@@ -255,7 +254,8 @@ if(isset($_POST['hidden-nonce'])){
                         amount: $('#amount').val(), //Required
                         currency: 'USD', // Required
                         locale: 'en_US',
-                        shippingAddressEditable: false,
+                        enableShippingAddress: true,
+                        shippingAddressEditable: false
                     });
                 },
 
