@@ -150,7 +150,7 @@
                         streetAddress: '1234 Main St.',
                         extendedAddress: 'Unit 1',
                         locality: 'Chicago',
-                        region: 'Illinois',
+                        region: 'Il',
                         postalCode: '60652',
                         countryCodeAlpha2: 'US',
                     }
@@ -160,13 +160,6 @@
             onAuthorize: function (data, actions) {
                 // Submit `payload.nonce` to your server.
                 //sent_payment_nonce(payload.nonce);
-                //console.log(payload);
-                return actions.payment.tokenize().then(function(data){
-                  return paypal.request.post('order-create.php', {nonce: data.nonce});
-                });
-                //return actions.payment.execut().then(function(payment){
-                   //console.log("Payment completed:", payment)
-                //});
             },
         }, '#paypal-button');
     });

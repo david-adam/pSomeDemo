@@ -14,6 +14,8 @@ Braintree_Configuration::privateKey('429de2dea73251000d2c7c14c164a861');
 
 if(isset($_POST['hidden-nonce'])){
 
+    // For simplicity, omit the data security check ( validation and filtering ). On prod env, all posted data should
+    // be checked.
     $result = Braintree\Transaction::sale([
             'amount'=> $_POST['amount'],
             'paymentMethodNonce'=> $_POST['hidden-nonce'],
@@ -24,7 +26,7 @@ if(isset($_POST['hidden-nonce'])){
                 'streetAddress' => $_POST['streetAddress'],
                 'extendedAddress' => $_POST['extendeAddress'],
                 'locality' => $_POST['city'],
-                //'region' => $_POST['region'],
+                'region' => $_POST['region'],
                 'postalCode' => $_POST['postalCode'],
                 'countryCodeAlpha2' => $_POST['countryCodeAlpha2'],
             ],
@@ -73,8 +75,9 @@ if(isset($_POST['hidden-nonce'])){
                 Demo of Paypal Express Checkout and Braintree integration
             </h1>
             <div class="notification">
-                This container is <strong>fluid</strong>: it will have a 32px gap on either side, on any
-                viewport size.
+                Due to <strong>time constrain</strong>, only valid the order amount on this checkout form. Since
+                the shipping address validation seems involves addtional paypal api check, for this demo, the
+                address info is hard-coded as a US address.
             </div>
             <div>
                 <form method="post" action="#">
@@ -93,7 +96,9 @@ if(isset($_POST['hidden-nonce'])){
                             <div class="field">
                                 <label class="label">First Name</label>
                                 <div class="control">
-                                    <input name="firstName" id="firstName" type="text" placeholder="First Name">
+                                    Wei
+                                    <input type="hidden" name="firstName" id="firstName" value="Wei">
+                                    <!--<input name="firstName" id="firstName" type="text" placeholder="First Name">-->
                                 </div>
                             </div>
                         </div>
@@ -101,7 +106,9 @@ if(isset($_POST['hidden-nonce'])){
                             <div class="field">
                                 <label class="label">Last Name</label>
                                 <div class="control">
-                                    <input name="lastName" id="lastName" class="input" type="text" placeholder="Last Name">
+                                    Dai
+                                    <input type="hidden" name="lastName" id="lastName" value="Dai">
+                                    <!--<input name="lastName" id="lastName" class="input" type="text" placeholder="Last Name">-->
                                 </div>
                             </div>
                         </div>
@@ -109,7 +116,9 @@ if(isset($_POST['hidden-nonce'])){
                             <div class="field">
                                 <label class="label">Company</label>
                                 <div class="control">
-                                    <input name="company" id="company" class="input" type="text" placeholder="Company">
+                                    Awesome Company
+                                    <input type="hidden" name="company" id="company" value="Awesome Company">
+                                    <!--<input name="company" id="company" class="input" type="text" placeholder="Company">-->
                                 </div>
                             </div>
                         </div>
@@ -117,7 +126,9 @@ if(isset($_POST['hidden-nonce'])){
                             <div class="field">
                                 <label class="label">Street Address</label>
                                 <div class="control">
-                                    <input name="streetAddress" id="streetAddress" class="input" type="text" placeholder="Street Address">
+                                    1234 Main St.
+                                    <input type="hidden" name="streetAddress" id="streetAddress" value="1234 Main St.">
+                                    <!--<input name="streetAddress" id="streetAddress" class="input" type="text" placeholder="Street Address">-->
                                 </div>
                             </div>
                         </div>
@@ -125,7 +136,9 @@ if(isset($_POST['hidden-nonce'])){
                             <div class="field">
                                 <label class="label">Extended Addressame</label>
                                 <div class="control">
-                                    <input name="extendedAddress" id="extendedAddress" class="input" type="text" placeholder="Extended Address">
+                                    Unit 1
+                                    <input type="hidden" name="extendedAddress" id="extendedAddress" value="Unit 1">
+                                    <!--<input name="extendedAddress" id="extendedAddress" class="input" type="text" placeholder="Extended Address">-->
                                 </div>
                             </div>
                         </div>
@@ -133,50 +146,52 @@ if(isset($_POST['hidden-nonce'])){
                             <div class="field">
                                 <label class="label">City</label>
                                 <div class="control">
-                                    <input name="city" id="city" class="input" type="text" placeholder="City">
+                                    Chicago
+                                    <input type="hidden" name="city" id="city" value="Chicago">
+                                    <!--<input name="city" id="city" class="input" type="text" placeholder="City">-->
                                 </div>
                             </div>
                         </div>
-                        <!--<div class="panel-block">
+                        <div class="panel-block">
                             <div class="field">
                                 <label class="label">Region</label>
                                 <div class="control">
-                                    <input name="region" id="region" class="input" type="text" placeholder="Region">
+                                    Il
+                                    <input type="hidden" name="region" id="region" value="Il">
+                                    <!--<input name="region" id="region" class="input" type="text" placeholder="Region">-->
                                 </div>
                             </div>
-                        </div>-->
+                        </div>
                         <div class="panel-block">
                             <div class="field">
                                 <label class="label">Postal Code</label>
                                 <div class="control">
-                                    <input name="postalCode" id="postalCode" class="input" type="text" placeholder="Postal Code">
+                                    60652
+                                    <input type="hidden" name="postalCode" id="postalCode" value="60652">
+                                    <!--<input name="postalCode" id="postalCode" class="input" type="text" placeholder="Postal Code">-->
                                 </div>
                             </div>
                         </div>
                         <div class="panel-block">
                             <div class="field">
                                 <label class="label">Country</label>
-                                <div class="select">
+                                US
+                                <input type="hidden" name="countryCodeAlpha2" id="countryCodeAlpha2" value="US">
+                                <!--<div class="select">
                                     <select title="Country" id="countryCodeAlpha2" name="countryCodeAlpha2">
                                         <option value="US">US</option>
                                         <option value="GB">GB</option>
                                     </select>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                     </nav>
 
-                    <div class="field is-grouped">
-                        <div class="field">
-                            <label><input id="check" type="checkbox"> Check here to continue</label>
-                        </div>
-                    </div>
                     <input type="hidden" name="hidden-nonce" id="hidden-nonce">
 
 
                 </form>
-                <p id="msgFormValidation" class="notification is-danger" style="display: none">Please enter an amount in a numeric value!</p>
-                <p id="msg" class="notification is-danger" style="display: none">Please check the checkbox.</p>
+                <p id="msgFormValidation" class="notification is-danger" style="display: none">Please enter an amount in a numeric value that is bigger than 0 !</p>
                 <div class="field is-grouped">
                     <div class="control">
                         <div id="paypal-button"></div>
@@ -189,28 +204,10 @@ if(isset($_POST['hidden-nonce'])){
 <script>
 
 
-    function isValid() {
-        return $('#check').prop('checked');
-    }
-
     function isFormValid() {
-        var amount = $('#amount').val();
-        return (!(isNaN(amount))) && amount !== '';
+        var amount = Number($('#amount').val());
+        return (amount !== '') && (!(isNaN(Number(amount))) && (Number(amount) > 0) );
     }
-
-    $('#check').change(function () {
-        if(!isFormValid()){
-            $('#msgFormValidation').show();
-            $('#check').prop('checked', false);
-            console.log($('#amount').val());
-            console.log('Not OK');
-        } else {
-            $('#msgFormValidation').hide();
-            console.log($('#amount').val());
-            console.log("OK");
-        }
-
-    });
 
     function toggleValidationMessage() {
         var errorMessage = $('#msgFormValidation');
@@ -258,24 +255,16 @@ if(isset($_POST['hidden-nonce'])){
                         amount: $('#amount').val(), //Required
                         currency: 'USD', // Required
                         locale: 'en_US',
-                        enableShippingAddress: true,
                         shippingAddressEditable: false,
-                        shippingAddressOverride: {
-                            firstName: $('#firstName').val(),
-                            lastName: $('#lastName').val(),
-                            company: $('#company').val(),
-                            streetAddress: $('#streetAddress').val(),
-                            extendedAddress: $('#extendedAddress').val(),
-                            locality: $('#city').val(),
-                            region: 'Il',
-                            postalCode: '60652',
-                            countryCodeAlpha2: 'US',
-                        }
                     });
                 },
 
                 validate: function(actions) {
                     toggleButton(actions);
+
+                    $('#amount').blur(function () {
+                        toggleButton(actions);
+                    })
 
                 },
 
